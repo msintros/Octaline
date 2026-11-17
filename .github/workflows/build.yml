@@ -1,0 +1,84 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  tests:
+    name: Engine tests (Linux)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run engine tests
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOCTALINE_BUILD_PLUGIN=OFF
+          cmake --build build -j 4
+          ctest --test-dir build --output-on-failure
+
+  mac:
+    name: macOS plugin (VST3 + AU, Apple Silicon + Intel)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Xcode
+          -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+
+      - name: Build
+        run: cmake --build build --config Release -j 4 -- -quiet
+
+      - name: Engine tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Plugin harness (presets, saved state, editor)
+        run: ./build/octaline_harness_artefacts/Release/octaline_harness
+
+      - name: Ad-hoc sign
+        run: |
+          cd build/Octaline_artefacts/Release
+          codesign --force --deep --sign - VST3/Octaline.vst3
+          codesign --force --deep --sign - AU/Octaline.component
+
+      - name: Validate with pluginval
+        run: |
+          curl -sSL -o pluginval.zip https://github.com/Tracktion/pluginval/releases/download/v1.0.4/pluginval_macOS.zip
+          unzip -q pluginval.zip
+          ./pluginval.app/Contents/MacOS/pluginval --strictness-level 8 --validate-in-process \
+            --validate build/Octaline_artefacts/Release/VST3/Octaline.vst3
+
+      - name: Validate Audio Unit with auval
+        run: |
+          mkdir -p ~/Library/Audio/Plug-Ins/Components
+          cp -R build/Octaline_artefacts/Release/AU/Octaline.component ~/Library/Audio/Plug-Ins/Components/
+          killall -9 AudioComponentRegistrar || true
+          auval -v aufx Oc8d Octl
+
+      - name: Package
+        run: |
+          mkdir -p dist/Octaline
+          cp -R build/Octaline_artefacts/Release/VST3/Octaline.vst3 dist/Octaline/
+          cp -R build/Octaline_artefacts/Release/AU/Octaline.component dist/Octaline/
+          cp packaging/install-mac.command "dist/Octaline/Install Octaline.command"
+          cp docs/INSTALL-mac.txt dist/Octaline/README.txt
+          cd dist && ditto -c -k --keepParent Octaline Octaline-mac.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Octaline-mac
+          path: dist/Octaline-mac.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/Octaline-mac.zip --title "Octaline ${GITHUB_REF_NAME}" --generate-notes
