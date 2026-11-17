@@ -1,0 +1,13 @@
+# ninja log v5
+1	30	0	/home/user/octaline/build2/_deps/juce-build/tools/CMakeFiles/cmake.verify_globs	35d942eab8d2d474
+33	432	1794940581545396262	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_graphics/juce_graphics_Sheenbidi.c.o	669eb6624f1c6f8a
+31	5300	1794940586405396551	extras/Build/juceaide/CMakeFiles/juceaide.dir/Main.cpp.o	85a495b9b626ed37
+31	5833	1794940586937396583	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/juce_build_tools/juce_build_tools.cpp.o	dda0923a987f33c0
+5833	5864	1794940586976638978	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_core/juce_core_CompilationTime.cpp.o	2619f4ef946b425b
+432	5914	1794940587021396588	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_events/juce_events.cpp.o	3544d5e619ffe3c6
+5865	8764	1794940589869396757	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_data_structures/juce_data_structures.cpp.o	fb84e25ce04cdfa5
+5301	13737	1794940594837397052	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_core/juce_core.cpp.o	61b8cad1f612f970
+33	20446	1794940601525397450	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_graphics/juce_graphics.cpp.o	d6beac207957d6b2
+33	21682	1794940602761397523	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o	6e938120c31586
+31	34778	1794940615813398299	extras/Build/juceaide/CMakeFiles/juceaide.dir/__/__/__/modules/juce_gui_basics/juce_gui_basics.cpp.o	8abcb6f615db5567
+34779	35882	1794940616985398369	extras/Build/juceaide/juceaide_artefacts/Custom/juceaide	50b24f38fcd17fb4

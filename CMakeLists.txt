@@ -32,7 +32,7 @@ if(OCTALINE_BUILD_PLUGIN)
     # To build offline, pass -DFETCHCONTENT_SOURCE_DIR_JUCE=/path/to/JUCE
     FetchContent_Declare(JUCE
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-        GIT_TAG 8.0.4
+        GIT_TAG 8.0.12
         GIT_SHALLOW ON)
     FetchContent_MakeAvailable(JUCE)
 
