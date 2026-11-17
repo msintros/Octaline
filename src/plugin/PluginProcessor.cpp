@@ -194,6 +194,17 @@ void OctalineProcessor::setStateInformation (const void* data, int sizeInBytes)
     auto tree = juce::ValueTree::fromXml (*xml);
     presets.setRestoring (true);
     apvts.replaceState (tree);
+
+    // replaceState skips parameters whose stored value already matches the
+    // snapped value it has cached (for example a bool left at 0.49 by a host),
+    // so push every saved value explicitly to restore the exact state.
+    for (auto* p : getParameters())
+        if (auto* rp = dynamic_cast<juce::RangedAudioParameter*> (p))
+        {
+            const auto child = tree.getChildWithProperty ("id", rp->paramID);
+            if (child.isValid() && child.hasProperty ("value"))
+                rp->setValueNotifyingHost (rp->convertTo0to1 ((float) (double) child.getProperty ("value")));
+        }
     presets.setRestoring (false);
     presets.readFromState (tree);
     requestReset();

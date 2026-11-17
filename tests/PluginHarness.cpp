@@ -94,6 +94,9 @@ int main (int argc, char** argv)
     const auto before = snapshot (*proc);
 
     auto proc2 = std::make_unique<OctalineProcessor>();
+    // Like pluginval: leave bools at in-between values before restoring.
+    for (auto* param : proc2->getParameters())
+        param->setValueNotifyingHost (0.49f);
     proc2->setStateInformation (block.getData(), (int) block.getSize());
     EXPECT (snapshot (*proc2) == before, "state restores every parameter");
     EXPECT (proc2->getPresets().getCurrentName() == proc->getPresets().getCurrentName(), "state restores preset name");
