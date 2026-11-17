@@ -1,0 +1,31 @@
+OCTALINE - installing on a Mac
+==============================
+
+This folder holds:
+  Octaline.vst3             the VST3 plug-in (Cubase, Live, Reaper, ...)
+  Octaline.component        the Audio Unit (Logic, GarageBand)
+  Install Octaline.command  copies both into place
+
+Easiest way
+-----------
+1. Open Terminal (Applications > Utilities > Terminal).
+2. Type   bash   and a space, drag "Install Octaline.command" from this
+   folder onto the Terminal window, and press Return.
+3. Restart your DAW. In Cubase, if Octaline does not show up, open
+   Studio > VST Plug-in Manager and click "Update Plug-in Information".
+
+By hand
+-------
+Copy Octaline.vst3 into      ~/Library/Audio/Plug-Ins/VST3
+Copy Octaline.component into ~/Library/Audio/Plug-Ins/Components
+(In Finder use Go > Go to Folder... and paste the path.)
+Then run this in Terminal, because the build is not signed with a paid
+Apple developer certificate and macOS blocks downloaded plug-ins otherwise:
+
+  xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/Octaline.vst3 ~/Library/Audio/Plug-Ins/Components/Octaline.component
+
+Your presets
+------------
+Presets you save inside the plug-in live in
+  ~/Library/Audio/Presets/Octaline
+Copy that folder to back them up or move them to another Mac.
