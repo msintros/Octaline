@@ -178,23 +178,31 @@ void BandStrip::resized()
     tapButton.setBounds (row.withTrimmedLeft (4));
 
     int y = 96;
-    for (auto* c : std::initializer_list<juce::Component*> { &source, &group, &note, &sync, &wave })
+    for (auto* c : std::initializer_list<juce::Component*> { &source, &group, &note, &sync })
     {
         c->setBounds (6, y, w, 24);
         y += 24;
     }
     phaseButton.setBounds (6, y + 2, w, 20);
 
-    time.setBounds (6, 246, w, 94);
+    time.setBounds (6, y + 28, w, 94);
+    y += 126;
 
-    y = 344;
     const int half = w / 2;
-    for (auto pair : { std::pair<Knob*, Knob*> { &lowCut, &highCut }, { &feedback, &tapKnob }, { &speed, &depth }, { &pan, &level } })
+    auto placePair = [&] (Knob& left, Knob& right)
     {
-        pair.first->setBounds (6, y, half, 76);
-        pair.second->setBounds (6 + half, y, w - half, 76);
+        left.setBounds (6, y, half, 76);
+        right.setBounds (6 + half, y, w - half, 76);
         y += 76;
-    }
+    };
+
+    // Delay controls, then filters, then modulation (wave, speed, depth), then output.
+    placePair (feedback, tapKnob);
+    placePair (lowCut, highCut);
+    wave.setBounds (6, y + 2, w, 24);
+    y += 28;
+    placePair (speed, depth);
+    placePair (pan, level);
 
     row = juce::Rectangle<int> (6, getHeight() - 26, w, 20);
     copyButton.setBounds (row.removeFromLeft (w / 2 - 2));
